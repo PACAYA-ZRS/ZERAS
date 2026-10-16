@@ -1,1 +1,471 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Century Project - Space Exploration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #02040a;
+      --cyan-glow: #00F0FF;
+      --text-light: #F0F4F8;
+      --text-muted: #94A3B8;
+      --glass-bg: rgba(7, 15, 30, 0.75);
+      --glass-border: rgba(0, 240, 255, 0.25);
+    }
 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Rajdhani', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Canvas Black Hole & Space Background */
+    #space-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(2, 4, 10, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1rem 2rem;
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 0.4rem 0;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--cyan-glow);
+      text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--cyan-glow);
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.5s ease-in-out forwards;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      text-align: center;
+      padding: 3.5rem 1rem;
+      background: radial-gradient(circle at center, rgba(30, 62, 98, 0.25) 0%, transparent 70%);
+      border-radius: 20px;
+      margin-bottom: 2.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .hero h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, #ffffff 0%, var(--cyan-glow) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .glass-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8rem;
+      color: #fff;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 6px;
+      height: 28px;
+      background: var(--cyan-glow);
+      border-radius: 3px;
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .logo-philosophy-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .logo-display-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      background: #ffffff;
+      border-radius: 20px;
+      border: 3px solid var(--cyan-glow);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+      text-align: center;
+    }
+
+    .philosophy-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+    }
+
+    .philosophy-item {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 1.2rem;
+      border-radius: 12px;
+      border-left: 3px solid var(--cyan-glow);
+    }
+
+    .philosophy-item h4 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--cyan-glow);
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .philosophy-item p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .canva-container {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-top: 56.2500%;
+      padding-bottom: 0;
+      box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16);
+      margin-top: 1.6em;
+      margin-bottom: 0.9em;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+
+    .canva-container iframe {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    footer {
+      border-top: 1px solid var(--glass-border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      margin-top: 4rem;
+      background: rgba(2, 4, 10, 0.9);
+    }
+
+    @media (max-width: 768px) {
+      .logo-philosophy-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Canvas Animasi Black Hole & Space -->
+  <canvas id="space-bg"></canvas>
+
+  <header>
+    <nav>
+      <a href="#" class="brand-logo">
+        <svg width="38" height="38" viewBox="0 0 100 100">
+          <path d="M 68 25 A 32 32 0 1 0 68 75" fill="none" stroke="#00F0FF" stroke-width="12" stroke-linecap="square"/>
+          <ellipse cx="50" cy="50" rx="46" ry="14" fill="none" stroke="#00F0FF" stroke-width="6" transform="rotate(-18 50 50)"/>
+          <path d="M 50 32 L 53 45 L 66 50 L 53 55 L 50 68 L 47 55 L 34 50 L 47 45 Z" fill="#FFD700"/>
+        </svg>
+        CENTURY
+      </a>
+      <ul class="nav-links">
+        <li><a href="#home" class="nav-btn active" data-tab="home">Home</a></li>
+        <li><a href="#design" class="nav-btn" data-tab="design">Design</a></li>
+        <li><a href="#product" class="nav-btn" data-tab="product">Product</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- TAB 1: HOME -->
+    <section id="home" class="tab-content active">
+      <div class="hero">
+        <h1>Welcome To Century Project</h1>
+        <p>Eksplorasi Teknologi & Sains Kosmik Tanpa Batas Berlandaskan Persatuan dan Kepercayaan.</p>
+      </div>
+
+      <div class="glass-card">
+        <h2 class="section-title">Filosofi Logo</h2>
+        <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+          Logo Century memiliki desain sederhana yang mengandung makna mendalam.
+        </p>
+
+        <div class="logo-philosophy-grid">
+          <div class="logo-display-box">
+            <svg width="170" height="170" viewBox="0 0 100 100">
+              <path d="M 68 25 A 32 32 0 1 0 68 75" fill="none" stroke="#0B192C" stroke-width="12" stroke-linecap="square"/>
+              <ellipse cx="50" cy="50" rx="46" ry="14" fill="none" stroke="#0B192C" stroke-width="6" transform="rotate(-18 50 50)"/>
+              <path d="M 50 30 L 53.5 44.5 L 68 50 L 53.5 55.5 L 50 70 L 46.5 55.5 L 32 50 L 46.5 44.5 Z" fill="#0B192C"/>
+            </svg>
+            <div style="font-family: 'Orbitron'; font-weight: 900; font-size: 1.3rem; color: #0B192C; letter-spacing: 3px; margin-top: 10px;">CENTURY</div>
+          </div>
+
+          <div>
+            <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 1rem;">
+              Secara keseluruhan, logo Century menggambarkan semangat untuk terus maju, menjaga kepercayaan, dan bersatu dalam mencapai tujuan demi masa depan yang lebih baik.
+            </p>
+
+            <div class="philosophy-list">
+              <div class="philosophy-item">
+                <h4>Huruf 'C'</h4>
+                <p>Melambangkan identitas Century serta semangat untuk terus berkembang.</p>
+              </div>
+              <div class="philosophy-item">
+                <h4>Bintang di Tengah</h4>
+                <p>Menggambarkan harapan, cita-cita, dan tujuan yang ingin dicapai.</p>
+              </div>
+              <div class="philosophy-item">
+                <h4>Garis Melingkar</h4>
+                <p>Melambangkan persatuan, perjalanan yang berkelanjutan, dan kemajuan tanpa henti.</p>
+              </div>
+              <div class="philosophy-item">
+                <h4>Warna Biru Navy</h4>
+                <p>Mencerminkan kepercayaan, ketegasan, dan tanggung jawab.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h2 class="section-title">Presentasi Century Project</h2>
+        <div class="canva-container">
+          <iframe loading="lazy" src="https://www.canva.com/design/DAHYIg_pgLQ/QzTBe0ZiSzjOMnrQ-OMWxQ/view?embed" allowfullscreen="allowfullscreen" allow="fullscreen"></iframe>
+        </div>
+        <a href="https://www.canva.com/design/DAHYIg_pgLQ/QzTBe0ZiSzjOMnrQ-OMWxQ/view?utm_content=DAHYIg_pgLQ&amp;utm_campaign=designshare&amp;utm_medium=embeds&amp;utm_source=link" target="_blank" rel="noopener" style="color: var(--cyan-glow); text-decoration: none; font-size: 0.95rem;">Black and White Planet Outer Space Presentation</a> oleh fathiin official
+      </div>
+    </section>
+
+    <!-- TAB 2: DESIGN -->
+    <section id="design" class="tab-content">
+      <div class="glass-card">
+        <h2 class="section-title">Design System</h2>
+        <p style="color: var(--text-muted); line-height: 1.6;">Konsep visual berbasis Sci-Fi Glassmorphism dan warna khas Biru Navy Century.</p>
+      </div>
+    </section>
+
+    <!-- TAB 3: PRODUCT -->
+    <section id="product" class="tab-content">
+      <div class="glass-card">
+        <h2 class="section-title">Century Product</h2>
+        <p style="color: var(--text-muted); line-height: 1.6;">Produk dan ekosistem teknologi Century Project.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Century Project. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Tab Navigation
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tabId = btn.getAttribute('data-tab');
+        navBtns.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+
+    // Canvas Black Hole & Starfield Animation
+    const canvas = document.getElementById('space-bg');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Stars
+    const stars = Array.from({ length: 200 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 2,
+      baseAlpha: Math.random()
+    }));
+
+    let angle = 0;
+
+    function animateSpace() {
+      ctx.fillStyle = '#02040a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Gambar Efek Black Hole di Bagian Pojok/Tengah Atas Latar Belakang
+      const bhX = canvas.width * 0.75;
+      const bhY = canvas.height * 0.3;
+      
+      angle += 0.02;
+
+      // Accretion Disk (Cahaya Piringan Berputar)
+      const grad = ctx.createRadialGradient(bhX, bhY, 20, bhX, bhY, 250);
+      grad.addColorStop(0, 'rgba(0, 0, 0, 1)');
+      grad.addColorStop(0.2, 'rgba(0, 240, 255, 0.8)');
+      grad.addColorStop(0.5, 'rgba(255, 120, 0, 0.4)');
+      grad.addColorStop(1, 'transparent');
+
+      ctx.save();
+      ctx.translate(bhX, bhY);
+      ctx.rotate(angle);
+      ctx.translate(-bhX, -bhY);
+
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(bhX, bhY, 250, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Pusat Hitam Black Hole
+      ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.arc(bhX, bhY, 55, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Lingkaran Event Horizon Bercahaya
+      ctx.strokeStyle = '#00F0FF';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(bhX, bhY, 57, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Gambar Bintang-bintang Berkelip
+      stars.forEach(star => {
+        const alpha = Math.abs(Math.sin(Date.now() * 0.002 + star.baseAlpha * 10));
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animateSpace);
+    }
+    animateSpace();
+  </script>
+</body>
+</html>
